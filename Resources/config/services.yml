@@ -1,0 +1,25 @@
+parameters:
+    lfx_paginator_class: LFX\PaginatorBundle\Core\PaginatorService
+    lfx_twig.paginator: LFX\PaginatorBundle\Twig\RenderTwig
+    lfx_databag.paginator: LFX\PaginatorBundle\Core\PaginatorDataBag
+
+services:
+  lfx.twig.extension:
+        class: %lfx_twig.paginator%
+        tags:
+            - { name: twig.extension }
+  dataBag:
+        class: %lfx_databag.paginator%
+  lfx_paginator:
+       class: %lfx_paginator_class%
+       scope: request
+       synchronized: true
+       public: true
+       calls: 
+         - [ setRequest , ["@request_stack"]]
+         - [ setEntityManager  , ["@doctrine.orm.entity_manager"]] 
+         - [ setFormFactory    , ["@form.factory"]]
+         - [ setPaginatorDataBag , ["@dataBag"]]
+         
+         
+#        arguments: [@service_id, "plain_value", %parameter%]
