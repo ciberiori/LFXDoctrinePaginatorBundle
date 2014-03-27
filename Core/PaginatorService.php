@@ -30,9 +30,14 @@ class PaginatorService implements PaginatorServiceInterface{
     
     public function addEntityDefinition(EntityDefinitionInterface $entity) {
         
+        if(count($entity->getDatabaseColumns())==0){
+            
+            throw new \LogicException("Lo Sentimos : las entidades tienen que tener definidas las columnas de la base de datos que se van a recuperar");
+            
+        }
+        
         array_push($this->entitiesDefinition, $entity);
         if ($entity->getJointEntityDefinition()!=null){
-            
             $this->_countJoinDefinitions++;
             
         }
@@ -59,18 +64,18 @@ class PaginatorService implements PaginatorServiceInterface{
      public function haveToPaginate() {
         
          if (count($this->entitiesDefinition) == 0) {
-            throw new LogicException(sprintf('La propiedad %s  no puede esta vacia', "EntitiesDefinitions"));
+            throw new LogicException(sprintf('Lo sentimos: Tiene que existir por lo menos un entityDefinition %s ', "EntitiesDefinitions"));
         } 
         
         if($this->dataBag->getlimit()==null){
             
             
-            throw  new \LogicException("el limite y el campo de orden no se han establecido");
+            throw  new \LogicException("Lo sentimos: El limite y el campo de orden no se han establecido");
         }
         
         if($this->dataBag->getOrderField()==null){
             
-            throw  new \LogicException("el campo de orden no se ha establecido");
+            throw  new \LogicException("Lo sentimos: El campo de orden no se ha establecido");
             
         }
         
@@ -98,6 +103,7 @@ class PaginatorService implements PaginatorServiceInterface{
         $this->query         = $this->entityManager->createQueryBuilder();
         $this->count_query   = $this->entityManager->createQueryBuilder();
         $this->expr_doctrine = $this->query->expr();
+        $this->request
         
     }
     
@@ -149,7 +155,7 @@ class PaginatorService implements PaginatorServiceInterface{
             } else {
                 foreach ($ent->getDatabaseColumns() as $column) {
                     
-                    $this->query->addSelect($ent->getPrefix() . "." . $column." AS ".$ent->getPrefix().$column);
+                    $this->query->addSelect($ent->getPrefix() . "." . $column." AS ".$ent->getPrefix()."_".$column);
                 }
             }
            
@@ -168,38 +174,23 @@ class PaginatorService implements PaginatorServiceInterface{
         
        
       if($ent->getJointEntityDefinition()!=null){
-          $_clausules=$ent->getJointEntityDefinition()->getOnClausule();
+         $_clausules=$ent->getJointEntityDefinition()->getOnClausule();
         
-       switch($ent->getJointEntityDefinition()->getTypeJoin()){
-           
+         $_target_bundle=$ent->getJointEntityDefinition()->getTargetPathBundle();
+         $_target_prefix=$ent->getJointEntityDefinition()->getTargetPrefix();
+         $_clausule=$ent->getPrefix().".".$_clausules[0]."=".$ent->getJointEntityDefinition()->getTargetPrefix().".".$_clausules[1];
+         $_typeJoinClausule=Join::WITH;
           
-           
+          
+       switch($ent->getJointEntityDefinition()->getTypeJoin()){
+         
            case JoinEntityDefinitionInterface::INNER:
-           $this->query->innerjoin($ent->getJointEntityDefinition()->getTargetPathBundle(),
-                                   $ent->getJointEntityDefinition()->getTargetPrefix(),
-                                   Join::WITH,
-                                   $ent->getPrefix().".".$_clausules[0]."=".
-                                   $ent->getJointEntityDefinition()->getTargetPrefix().".".$_clausules[1]); 
-               
-           $this->count_query->innerjoin($ent->getJointEntityDefinition()->getTargetPathBundle(),
-                                   $ent->getJointEntityDefinition()->getTargetPrefix(),
-                                   Join::WITH,
-                                   $ent->getPrefix().".".$_clausules[0]."=".
-                                   $ent->getJointEntityDefinition()->getTargetPrefix().".".$_clausules[1]);     
+           $this->query->innerjoin($_target_bundle,$_target_prefix,$_typeJoinClausule,$_clausule); 
+           $this->count_query->innerjoin($_target_bundle,$_target_prefix,$_typeJoinClausule,$_clausule);     
            break;
            case JoinEntityDefinitionInterface::LEFT:
-           $this->query->leftjoin($ent->getJointEntityDefinition()->getTargetPathBundle(),
-                                   $ent->getJointEntityDefinition()->getTargetPrefix(),
-                                   Join::WITH,
-                                   $ent->getPrefix().".".$_clausules[0]."=".
-                                   $ent->getJointEntityDefinition()->getTargetPrefix().".".$_clausules[1]);   
-               
-           $this->count_query->leftjoin($ent->getJointEntityDefinition()->getTargetPathBundle(),
-                                   $ent->getJointEntityDefinition()->getTargetPrefix(),
-                                   Join::WITH,
-                                   $ent->getPrefix().".".$_clausules[0]."=".
-                                   $ent->getJointEntityDefinition()->getTargetPrefix().".".$_clausules[1]);     
-               
+           $this->query->leftjoin($_target_bundle,$_target_prefix,$_typeJoinClausule,$_clausule);   
+           $this->count_query->leftjoin($_target_bundle,$_target_prefix,$_typeJoinClausule,$_clausule);     
            break;
        }   
       } 
@@ -219,7 +210,6 @@ class PaginatorService implements PaginatorServiceInterface{
         $_parts_order_field=split("_",$this->dataBag->getOrderField(),2);
         $this->dataBag->setOrderField2($_parts_order_field[0].".".$_parts_order_field[1]);
         
-        echo "";
     }
     
     
@@ -317,12 +307,32 @@ class PaginatorService implements PaginatorServiceInterface{
         $this->dataBag->setOrderField($prefix,$field);
     }
     
+    public function setOrder($order){
+        
+        $this->dataBag->setOrder($order);
+        
+    }
+    
     
     public function getDataBag(){
         
         return $this->dataBag;
     }
     
+    
+    
+    public function addFormFilterLimitField($label,array $choices){
+        
+        
+      $this->formFilter->add("limit","choice",array("label"=>$label,"choices"=>$choices,"required"=>true,"data"=>$this->dataBag->getLimit()));  
+    }
+    
+    
+    public function addFormFilterOrderField($label,$label_asc,$label_desc){
+        
+      $this->formFilter->add("order","choice",array("required"=>true,"label"=>$label,"choices"=>array("ASC"=>$label_asc,"DESC"=>$label_desc),"data"=>$this->dataBag->getOrder()));
+        
+    }
 }
 
 ?>

@@ -13,6 +13,14 @@ class EntityDefinition implements EntityDefinitionInterface {
     private $titleOrders=array();
     private $columns=array();
     
+    
+    
+    public function __construct($prefix,$pathBundle,array $databaseColumns) {
+        $this->prefix=$prefix;
+        $this->pathBundle=$pathBundle;
+        $this->columns=$databaseColumns;
+    }
+    
     public function SetPathBundle($path) {
         
         $this->pathBundle=$path;

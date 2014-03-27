@@ -11,6 +11,16 @@ class JoinEntityDefinition implements JoinEntityDefinitionInterface{
     private $onClausules=array();
     private $joinType=null;
     
+    
+    public function __construct($targetPrefix,$targetPathBundle,array $onClausule,$joinType= JoinEntityDefinitionInterface::INNER) {
+   
+        $this->prefix=$targetPrefix;
+        $this->pathBundle=$targetPathBundle;
+        $this->onClausules=$onClausule;
+        $this->joinType=$joinType;
+        
+    }
+    
     public function getOnClausule() {
         return $this->onClausules;
     }
