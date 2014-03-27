@@ -103,7 +103,7 @@ class PaginatorService implements PaginatorServiceInterface{
         $this->query         = $this->entityManager->createQueryBuilder();
         $this->count_query   = $this->entityManager->createQueryBuilder();
         $this->expr_doctrine = $this->query->expr();
-        $this->request
+      
         
     }
     
