@@ -10,7 +10,6 @@ class EntityDefinition implements EntityDefinitionInterface {
     private $filters=array();
     private $joinEntityDefinition=null;
     private $prefix=null;
-    private $titleOrders=array();
     private $columns=array();
     
     
@@ -43,10 +42,7 @@ class EntityDefinition implements EntityDefinitionInterface {
         return $this->prefix;
     }
 
-    public function getTitleOrders() {
-        return $this->titleOrders;
-    }
-
+   
     public function setFilters(array $array) {
         $this->filters=$array;
     }
@@ -59,9 +55,7 @@ class EntityDefinition implements EntityDefinitionInterface {
         $this->prefix=$prefix;
     }
 
-    public function setTitleOrders(array $array) {
-        $this->titleOrders=$array;
-    }
+   
 
     public function getDatabaseColumns() {
         return $this->columns;
