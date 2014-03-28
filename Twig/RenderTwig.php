@@ -43,17 +43,16 @@ class RenderTwig extends \Twig_Extension {
         
         $bag->setPage(1);
         $_order_field=$order_field[0].".".$order_field[1];
+        $_order_field=trim($_order_field);
         
         if($bag->getOrderField()==$_order_field){
             
            if($bag->getOrder()=="ASC"){
             
                $bag->setOrder("DESC");               
-           }else{
+           }else {
                $bag->setOrder("ASC");
            }   
-        }else{
-            $bag->setOrder("DESC");
         }
        return  $this->renderLinks($bag,0,$order_field[0]."_".$order_field[1]);    
     }

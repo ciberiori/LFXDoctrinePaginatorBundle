@@ -17,6 +17,8 @@ class PaginatorService implements PaginatorServiceInterface{
     
     
     
+    
+    
     private $query=null;
     private $count_query=null;
     private $expr_doctrine=null;
@@ -86,12 +88,9 @@ class PaginatorService implements PaginatorServiceInterface{
         $this->_preparedDatabaseColumns(); 
         $this->_checkFormAndAddWhereAndOrder();
         
-        $dql1=$this->query->getDql();
-        $dql2=$this->count_query->getDql();
         
         $this->_addLimitsAndExecute();
-
-        
+                
         
        
       
@@ -331,6 +330,29 @@ class PaginatorService implements PaginatorServiceInterface{
     public function addFormFilterOrderField($label,$label_asc,$label_desc){
         
       $this->formFilter->add("order","choice",array("required"=>true,"label"=>$label,"choices"=>array("ASC"=>$label_asc,"DESC"=>$label_desc),"data"=>$this->dataBag->getOrder()));
+        
+    }
+    
+    
+    public function getQueryDQL(){
+        
+        return $this->query->getDQL();
+        
+    }
+    
+    
+    
+    public function getCountQueryDQL(){
+        
+        return $this->count_query->getDQL();
+        
+    }
+    
+    
+    public function executeQueryAndLimits(){
+        
+        $this->_addLimitsAndExecute();
+        
         
     }
 }

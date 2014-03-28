@@ -19,7 +19,7 @@ class EntityDefinition implements EntityDefinitionInterface {
         $this->pathBundle=$pathBundle;
         $this->columns=$databaseColumns;
     }
-    
+  
     public function SetPathBundle($path) {
         
         $this->pathBundle=$path;
