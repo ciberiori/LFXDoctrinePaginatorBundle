@@ -14,11 +14,6 @@ class PaginatorService implements PaginatorServiceInterface{
     private $formFactory=null;
     private $entityManager=null;
     private $dataBag=null;
-    
-    
-    
-    
-    
     private $query=null;
     private $count_query=null;
     private $expr_doctrine=null;
@@ -116,9 +111,7 @@ class PaginatorService implements PaginatorServiceInterface{
         $this->formFilter->setMethod("GET");
         $this->dataBag->setFormFilterName($this->formFilter->getName());
         foreach($this->entitiesDefinition as $ent){
-            
             foreach($ent->getFilters() as $value){
-                
            if (is_array($value)) {
                $default_values["data"] = $this->request->getCurrentRequest()->get($this->formFilter->getName() . "[" . $ent->getPrefix()."_".$value[0] . "]", "", true);
                    if($this->request->getCurrentRequest()->query->has($value[0])){

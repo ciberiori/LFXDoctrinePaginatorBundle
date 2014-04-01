@@ -1,0 +1,19 @@
+{
+    "name": "lfx/paginator-bundle",
+    "description": "paginador symfony2",
+    "license": "free",
+    "authors": [
+        {
+            "name": "victor lopez",
+            "email": "ciberiori@gmail.com"
+        }
+    ],
+    "minimum-stability": "beta",
+    "require": {
+
+    },
+    "autoload": {
+        "psr-0": {"LFX\\PaginatorBundle": ""}
+    },
+    "target-dir": "LFX/PaginatorBundle"
+}
