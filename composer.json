@@ -14,5 +14,9 @@
     "autoload": {
         "psr-0": {"LFX\\PaginatorBundle": ""}
     },
-    "target-dir": "LFX/PaginatorBundle"
+    "target-dir": "LFX/PaginatorBundle",
+     "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
 }
